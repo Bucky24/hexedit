@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "scripts": {
         "build": "webpack",
-        "dev": "NODE_ENV=development npm run build && NODE_ENV=development npm start",
+        "dev": "cross-env NODE_ENV=development npm run build && cross-env NODE_ENV=development npm start",
         "start": "electron .",
         "postinstall": "npm run build",
         "dist": "electron-builder"
@@ -14,15 +14,16 @@
         "@babel/preset-env": "7.12.11",
         "@babel/preset-react": "7.12.10",
         "babel-loader": "8.2.2",
+        "cross-env": "^7.0.3",
         "css-loader": "5.0.1",
+        "electron": "15.0.0",
         "electron-builder": "^22.11.7",
         "file-loader": "6.2.0",
         "html-webpack-plugin": "5.2.0",
         "style-loader": "2.0.0",
         "webpack": "5.24.2",
         "webpack-cli": "4.5.0",
-        "webpack-dev-server": "3.11.2",
-        "electron": "15.0.0"
+        "webpack-dev-server": "3.11.2"
     },
     "dependencies": {
         "classnames": "^2.3.1",

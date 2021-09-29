@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
+
 import styles from './styles.css';
 
 import Coms from './utils/coms';
 import FileContents from './FileContents';
 
-export default function FileComparison({ files, selected, onSelect }) {
+export default function FileComparison({ files, selected, onSelect, onClose }) {
     const [data, setData] = useState([]);
     const [comparisons, setComparisons] = useState([]);
     
@@ -19,16 +20,24 @@ export default function FileComparison({ files, selected, onSelect }) {
         setData(nullArr);
         
         files.forEach((file, index) => {
+            const files = file.split(/[\/\\]/);
+            const name = files[files.length-1];
+
             Coms.send("getFile", { file }).then((results) => {
                 setData((data) => {
                     const newData = [...data];
-                    newData[index] = results;
+                    newData[index] = {
+                        data: results,
+                        name,
+                        file,
+                    };
+                    console.log(newData);
                     return newData;
                 });
             });
         });
         onSelect(emptyArr);
-    }, []);
+    }, [files]);
     
     useEffect(() => {
         // compare
@@ -62,11 +71,14 @@ export default function FileComparison({ files, selected, onSelect }) {
     return (
         <div className={styles.comparisonOuter}>
             {data.map((bin, index) => {
-                //console.log('at index', index, bin);
+                if (!bin) {
+                    return null;
+                }
                 return (
-                    <div className={styles.comparisonFile} key={index}>
+                    <div className={styles.comparisonFile} key={index} style={{ width: 100/data.length }}>
                         <FileContents
-                            contents={bin}
+                            contents={bin.data}
+                            name={bin.name}
                             comparisons={comparisons}
                             selected={selected[index] || []}
                             onSelect={(item) => {
@@ -81,6 +93,11 @@ export default function FileComparison({ files, selected, onSelect }) {
                                 newSelected[index] = newItems;
                                 
                                 onSelect(newSelected);
+                            }}
+                            onClose={() => {
+                                if (onClose) {
+                                    onClose(bin.file);
+                                }
                             }}
                         />
                     </div>

@@ -6,7 +6,7 @@
         "dev": "cross-env NODE_ENV=development npm run build && cross-env NODE_ENV=development npm start",
         "start": "electron .",
         "postinstall": "npm run build",
-        "dist": "electron-builder"
+        "dist": "npm run build && electron-builder -p never --win"
     },
     "devDependencies": {
         "@babel/core": "7.12.10",
@@ -31,5 +31,17 @@
         "prop-types": "15.7.2",
         "react": "17.0.1",
         "react-dom": "17.0.1"
+    },
+    "build": {
+        "win": {
+            "target": [
+                "portable"
+            ]
+        },
+        "files": [
+            "build",
+            "index.js",
+            "server"
+        ]
     }
 }

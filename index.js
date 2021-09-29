@@ -1,5 +1,6 @@
 const electron = require('electron');
 const commands = require('./server/commands');
+const path = require('path');
 
 const {
 	BrowserWindow,
@@ -36,11 +37,13 @@ app.on('ready', () => {
         },
   	});
 
+	const htmlPath = path.join(__dirname, '/build/index.html');
+
 	// load the local HTML file
 	let url = require('url').format({
 		protocol: 'file',
 		slashes: true,
-		pathname: require('path').join(__dirname, '/build/index.html')
+		pathname: htmlPath,
 	})
 	//console.log(url)
 	mainWindow.loadURL(url)

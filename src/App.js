@@ -25,30 +25,39 @@ export default function App() {
                     }}
                 />
             </div>
-            <div style={{ height: 200, flexShrink: 0 }}>
+            <div style={{ height: 200, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
                 <input type="button" value="Open File" onClick={() => {
                     Coms.send("getFileName").then((name) => {
                         files.push(name);
                         setFiles([...files]);
                     });
                 }}/>
-                {selected && selected.map((items) => {
-                    return (
-                        <div>
-                            {items.map(({ number }) => {
-                                const hex = number.toString(16).padStart(2, '0');
-                                const bin = number.toString(2).padStart(8, '0');
-                                
-                                const char1 = bin.substr(0, 8);
-                                const charNum1 = parseInt(char1, 2);
-                                const char = String.fromCharCode(charNum1);
-                                return <div>
-                                0x{hex}: {number}, {bin}, &quot;{char}&quot;
-                                </div>
-                            })}
-                        </div>
-                    );
-                })}
+                <div style={{ display: 'flex', height: 'calc(100% - 21px)' }}>
+                    {selected && selected.map((items, index) => {
+                        let totalString = "";
+                        for (const item of items) {
+                            const bin = item.number.toString(2).padStart(8, '0');
+                            totalString += bin;
+                        }
+
+                        return (
+                            <div style={{ width: `${100 / selected.length}%`, overflowY: 'auto', flexShrink: 1 }} key={`selected_${index}`}>
+                                <div style={{ wordBreak: 'break-all' }}>{totalString}</div>
+                                {items.map(({ number }, index) => {
+                                    const hex = number.toString(16).padStart(2, '0');
+                                    const bin = number.toString(2).padStart(8, '0');
+                                    
+                                    const char1 = bin.substr(0, 8);
+                                    const charNum1 = parseInt(char1, 2);
+                                    const char = String.fromCharCode(charNum1);
+                                    return <div key={index}>
+                                    0x{hex}: {number}, {bin}, &quot;{char}&quot;
+                                    </div>
+                                })}
+                            </div>
+                        );
+                    })}
+                </div>
             </div>
         </div>
 	</div>);

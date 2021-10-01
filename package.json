@@ -1,6 +1,6 @@
 {
     "name": "hexedit",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "scripts": {
         "build": "webpack",
         "dev": "cross-env NODE_ENV=development npm run build && cross-env NODE_ENV=development npm start",

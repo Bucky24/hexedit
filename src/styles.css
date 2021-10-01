@@ -29,6 +29,10 @@
     border-color: #0f0;
 }
 
+.number.hovered {
+    background-color: #aaa;
+}
+
 .comparisonOuter {
     display: flex;
     justify-content: space-between;

@@ -9,6 +9,7 @@ import FileContents from './FileContents';
 export default function FileComparison({ files, selected, onSelect, onClose }) {
     const [data, setData] = useState([]);
     const [comparisons, setComparisons] = useState([]);
+    const [hovered, setHovered] = useState(-1);
     
     useEffect(() => {
         const nullArr = [];
@@ -31,7 +32,7 @@ export default function FileComparison({ files, selected, onSelect, onClose }) {
                         name,
                         file,
                     };
-                    console.log(newData);
+                    //console.log(newData);
                     return newData;
                 });
             });
@@ -43,7 +44,7 @@ export default function FileComparison({ files, selected, onSelect, onClose }) {
         // compare
         const newComparisons = [];
         
-        let maxWidth = 1000;
+        let maxWidth = 5000;
         for (let i=0;i<data.length;i++) {
             maxWidth = Math.min(maxWidth, data[i]?.length ?? 0);
         }
@@ -98,6 +99,10 @@ export default function FileComparison({ files, selected, onSelect, onClose }) {
                                 if (onClose) {
                                     onClose(bin.file);
                                 }
+                            }}
+                            hoverCell={hovered}
+                            enterCell={(cell) => {
+                                setHovered(cell);
                             }}
                         />
                     </div>

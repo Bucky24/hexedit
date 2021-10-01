@@ -5,7 +5,7 @@ import styles from './styles.css';
 
 import Coms from './utils/coms';
 
-export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose }) {
+export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose, enterCell, hoverCell, leaveCell }) {
     const contentPage = contents ? [...contents.slice(0, 1000)] : [];
     
     const useComparisons = comparisons || [];
@@ -40,6 +40,7 @@ export default function FileContents({ contents, comparisons, selected, onSelect
                                 styles.number,
                                 isDifferent && styles.different,
                                 selectedIndexes.includes(index) && styles.selected,
+                                index === hoverCell && styles.hovered,
                             )}
                             tooltip={`Dec: ${number}. bin: ${bin}`}
                             onClick={() => {
@@ -47,6 +48,16 @@ export default function FileContents({ contents, comparisons, selected, onSelect
                                     index,
                                     number,
                                 });
+                            }}
+                            onMouseEnter={() => {
+                                if (enterCell) {
+                                    enterCell(index);
+                                }
+                            }}
+                            onMouseLeave={() => {
+                                if (leaveCell) {
+                                    leaveCell(index);
+                                }
                             }}
                         >
                             0x{hex}

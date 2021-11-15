@@ -1,0 +1,6 @@
+0.3.0
+
+* Program now saves the open file list and re-opens the files upon launch.
+* Added ability to clear all selected cells for a file
+* Fixed a bug where the program would crash if the file open dialog was cancelled.
+* Added ability to define a "processor" which will color-code the cells.

@@ -1,15 +1,48 @@
-import React, { useEffect, useState } from 'react';
-
+import React, { useEffect, useState, useRef } from 'react';
 
 import styles from './styles.css';
 
 import Coms from './utils/coms';
 import FileContents from './FileContents';
+import { buildMethod, runMethod } from './utils/execute';
 
-export default function FileComparison({ files, selected, onSelect, onClose }) {
+export default function FileComparison({ files, selected, onSelect, onClose, processor }) {
     const [data, setData] = useState([]);
     const [comparisons, setComparisons] = useState([]);
     const [hovered, setHovered] = useState(-1);
+    const processorRef = useRef(processor);
+    const [processing, setProcessing] = useState(false);
+    
+    const processFiles = () => {
+        if (processing) {
+            return;
+        }
+        const processor = processorRef.current;
+        //console.log('processing with', processor);
+        if (!processor) {
+            for (const fileItem of data) {
+                fileItem.processed = [];
+            }
+            return;
+        }
+        const methodId = buildMethod(processor);
+        
+        for (const fileItem of data) {
+            if (!fileItem) {
+                continue;
+            }
+            //console.log('checking', fileItem.file);
+            const fileData = fileItem.data;
+            const result = runMethod(methodId, { data: fileData });
+            //console.log(result);
+            fileItem.processed = result;
+        }
+    };
+    
+    useEffect(() => {
+        processorRef.current = processor;
+        processFiles();
+    }, [processor, processing]);
     
     useEffect(() => {
         const nullArr = [];
@@ -19,25 +52,36 @@ export default function FileComparison({ files, selected, onSelect, onClose }) {
             emptyArr.push([]);
         }
         setData(nullArr);
+        setProcessing(true);
+        
+        const promises = [];
         
         files.forEach((file, index) => {
+            if (!file) {
+                return;
+            }
             const files = file.split(/[\/\\]/);
             const name = files[files.length-1];
 
-            Coms.send("getFile", { file }).then((results) => {
+            const promise = Coms.send("getFile", { file }).then((results) => {
                 setData((data) => {
                     const newData = [...data];
                     newData[index] = {
                         data: results,
                         name,
                         file,
+                        processed: [],
                     };
                     //console.log(newData);
                     return newData;
                 });
             });
+            promises.push(promise);
         });
         onSelect(emptyArr);
+        Promise.all(promises).then(() => {
+            setProcessing(false);
+        });
     }, [files]);
     
     useEffect(() => {
@@ -104,6 +148,7 @@ export default function FileComparison({ files, selected, onSelect, onClose }) {
                             enterCell={(cell) => {
                                 setHovered(cell);
                             }}
+                            processed={bin.processed}
                         />
                     </div>
                 );

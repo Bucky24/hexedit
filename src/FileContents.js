@@ -5,7 +5,7 @@ import styles from './styles.css';
 
 import Coms from './utils/coms';
 
-export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose, enterCell, hoverCell, leaveCell }) {
+export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose, enterCell, hoverCell, leaveCell, processed }) {
     const contentPage = contents ? [...contents.slice(0, 1000)] : [];
     
     const useComparisons = comparisons || [];
@@ -33,6 +33,17 @@ export default function FileContents({ contents, comparisons, selected, onSelect
                     
                     const isDifferent = useComparisons.includes(index);
                     
+                    const matchingProcess = processed.find((item) => {
+                        if (index < 10) {
+                            //console.log(item.startIndex, item.endIndex, index, index >= item.startIndex, index <= item.endIndex);
+                        }
+                        return index >= item.startIndex && index <= item.endIndex;
+                    });
+
+                    if (index < 10) {
+                        //console.log(processed, matchingProcess, index);
+                    }
+                    
                     return (
                         <div
                             key={index}
@@ -42,6 +53,9 @@ export default function FileContents({ contents, comparisons, selected, onSelect
                                 selectedIndexes.includes(index) && styles.selected,
                                 index === hoverCell && styles.hovered,
                             )}
+                            style={{
+                                backgroundColor: matchingProcess?.color,
+                            }}
                             tooltip={`Dec: ${number}. bin: ${bin}`}
                             onClick={() => {
                                 onSelect({

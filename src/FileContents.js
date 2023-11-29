@@ -5,7 +5,7 @@ import styles from './styles.css';
 
 import Coms from './utils/coms';
 
-export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose, enterCell, hoverCell, leaveCell, processed }) {
+export default function FileContents({ contents, comparisons, selected, onSelect, name, onClose, enterCell, hoverCell, leaveCell, processed, onReload }) {
     const contentPage = contents ? [...contents.slice(0, 1000)] : [];
     
     const useComparisons = comparisons || [];
@@ -18,6 +18,11 @@ export default function FileContents({ contents, comparisons, selected, onSelect
                 type="button"
                 value="Close"
                 onClick={onClose}
+            />
+            <input
+                type="button"
+                value="Reload"
+                onClick={onReload}
             />
         </div>
 		{!contents && (

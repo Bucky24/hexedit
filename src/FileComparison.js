@@ -38,6 +38,22 @@ export default function FileComparison({ files, selected, onSelect, onClose, pro
             fileItem.processed = result;
         }
     };
+
+    const loadFile = (file, index, name) => {
+        return Coms.send("getFile", { file }).then((results) => {
+            setData((data) => {
+                const newData = [...data];
+                newData[index] = {
+                    data: results,
+                    name,
+                    file,
+                    processed: [],
+                };
+                //console.log(newData);
+                return newData;
+            });
+        });
+    };
     
     useEffect(() => {
         processorRef.current = processor;
@@ -63,19 +79,7 @@ export default function FileComparison({ files, selected, onSelect, onClose, pro
             const files = file.split(/[\/\\]/);
             const name = files[files.length-1];
 
-            const promise = Coms.send("getFile", { file }).then((results) => {
-                setData((data) => {
-                    const newData = [...data];
-                    newData[index] = {
-                        data: results,
-                        name,
-                        file,
-                        processed: [],
-                    };
-                    //console.log(newData);
-                    return newData;
-                });
-            });
+            const promise = loadFile(file, index, name);
             promises.push(promise);
         });
         onSelect(emptyArr);
@@ -149,6 +153,9 @@ export default function FileComparison({ files, selected, onSelect, onClose, pro
                                 setHovered(cell);
                             }}
                             processed={bin.processed}
+                            onReload={() => {
+                                loadFile(bin.file, index, bin.name);
+                            }}
                         />
                     </div>
                 );
